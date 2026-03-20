@@ -7,12 +7,12 @@ Command-line interface for [Certimate](https://github.com/certimate-go/certimate
 
 ## Features
 
+- **Agent-Native Design**: Built for AI agents (Claude Code, OpenClaw, etc.) with SKILL.md integrations
 - Workflow management: list, view, and execute certificate workflows
 - Certificate management: view and download SSL certificates in multiple formats
 - Access management: create, edit, and delete provider credentials
 - Multiple output formats: JSON (default) and table output
 - Profile support: manage multiple server configurations
-- AI agent ready: includes SKILL.md files for AI agent integration
 
 ## Installation
 
@@ -188,14 +188,25 @@ certimate workflow list --output table
 
 ## AI Agent Skills
 
-The repo ships Agent Skills (SKILL.md files) for AI-powered SSL certificate management:
+Certimate CLI is **designed for AI agents first**. It ships with Agent Skills (SKILL.md files) that enable seamless integration with various AI agent frameworks:
 
-- `ctm-shared` - Common patterns, authentication, and CLI setup
-- `ctm-workflow` - Certificate workflow operations
-- `ctm-certificate` - Certificate viewing and downloading
-- `ctm-access` - Provider credential management
+- **Claude Code** - Anthropic's CLI agent
+- **OpenClaw** - Open-source agent framework
+- **Any Claw-compatible agent** - Skills use standard metadata format
 
-### Using npx
+### Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| `ctm-shared` | Common patterns, authentication, and CLI setup |
+| `ctm-workflow` | Certificate workflow operations (list, run, cancel) |
+| `ctm-workflow-create` | Create and configure new workflows |
+| `ctm-certificate` | Certificate viewing and downloading |
+| `ctm-access` | Provider credential management |
+
+### Installation
+
+#### Claude Code
 
 ```bash
 # Install all skills at once
@@ -203,14 +214,34 @@ npx skills add https://github.com/certimate-go/cli
 
 # Or pick only what you need
 npx skills add https://github.com/certimate-go/cli/tree/main/skills/ctm-workflow
-npx skills add https://github.com/certimate-go/cli/tree/main/skills/ctm-certificate
 ```
 
-### Manual Installation
+#### OpenClaw / Other Claw-Compatible Agents
+
+Skills include `openclaw` metadata for automatic discovery:
+
+```yaml
+metadata:
+  openclaw:
+    category: "devops"
+    requires:
+      bins: ["certimate"]
+```
+
+Simply clone or symlink the skills directory to your agent's skills path.
+
+#### Manual Installation
 
 ```bash
 cp -r skills/* ~/.claude/skills/
 ```
+
+### Why Agent Skills?
+
+- **Zero learning curve**: AI agents understand CLI capabilities instantly
+- **Type-safe operations**: Skills document exact command syntax and outputs
+- **Error handling**: Built-in troubleshooting patterns for common issues
+- **Multi-format output**: JSON by default for machine parsing, table for humans
 
 ## Development
 
