@@ -1,5 +1,7 @@
 # certimate-cli
 
+English | [简体中文](./README_CN.md)
+
 Command-line interface for [Certimate](https://github.com/certimate-go/certimate) SSL certificate management.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/certimate-go/cli)](https://goreportcard.com/report/github.com/certimate-go/cli)
