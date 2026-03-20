@@ -49,7 +49,7 @@ changelog:
 release:
   github:
     owner: certimate-go
-    name: certimate-cli
+    name: cli
   draft: false
   prerelease: auto
 
@@ -66,10 +66,10 @@ brews:
     install: |
       bin.install "certimate"
 
-scoops:
-  - bucket:
-      owner: certimate-go
-      name: scoop-bucket
-    homepage: https://github.com/certimate-go/cli
-    description: CLI for Certimate SSL certificate management
-    license: MIT
+# scoops:
+#   - repository:
+#       owner: certimate-go
+#       name: scoop-bucket
+#     homepage: https://github.com/certimate-go/cli
+#     description: CLI for Certimate SSL certificate management
+#     license: MIT
