@@ -1,0 +1,86 @@
+{
+  "nodes": [
+    {
+      "id": "start-node",
+      "type": "start",
+      "data": {
+        "name": "Start",
+        "config": {
+          "trigger": "manual"
+        }
+      }
+    },
+    {
+      "id": "try-catch-node",
+      "type": "tryCatch",
+      "data": {
+        "name": "Try Execute"
+      },
+      "blocks": [
+        {
+          "id": "try-block",
+          "type": "tryBlock",
+          "data": {"name": ""},
+          "blocks": [
+            {
+              "id": "apply-node",
+              "type": "bizApply",
+              "data": {
+                "name": "Apply Certificate",
+                "config": {
+                  "challengeType": "dns-01",
+                  "keySource": "auto",
+                  "keyAlgorithm": "RSA2048",
+                  "skipBeforeExpiryDays": 30
+                }
+              }
+            },
+            {
+              "id": "deploy-node",
+              "type": "bizDeploy",
+              "data": {
+                "name": "Deploy Certificate",
+                "config": {
+                  "skipOnLastSucceeded": true,
+                  "certificateOutputNodeId": "apply-node"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "catch-block",
+          "type": "catchBlock",
+          "data": {"name": "On Error"},
+          "blocks": [
+            {
+              "id": "notify-node",
+              "type": "bizNotify",
+              "data": {
+                "name": "Send Notification",
+                "config": {
+                  "subject": "[Certimate] Workflow Failure Alert!",
+                  "message": "Your workflow \"{{ $workflow.name }}\" run has failed. Please check the details."
+                }
+              }
+            },
+            {
+              "id": "end-error-node",
+              "type": "end",
+              "data": {"name": "End"}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "end-success-node",
+      "type": "end",
+      "data": {"name": "End"}
+    }
+  ],
+  "edges": [
+    {"source": "start-node", "target": "try-catch-node"},
+    {"source": "try-catch-node", "target": "end-success-node"}
+  ]
+}

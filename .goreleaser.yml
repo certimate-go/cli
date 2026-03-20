@@ -1,0 +1,75 @@
+version: 2
+
+project_name: certimate-cli
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/certimate-go/cli/cmd.Version={{.Version}}
+      - -X github.com/certimate-go/cli/cmd.Commit={{.Commit}}
+      - -X github.com/certimate-go/cli/cmd.BuildDate={{.Date}}
+    main: .
+    binary: certimate
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+
+release:
+  github:
+    owner: certimate-go
+    name: certimate-cli
+  draft: false
+  prerelease: auto
+
+brews:
+  - name: certimate
+    repository:
+      owner: certimate-go
+      name: homebrew-tap
+    directory: Formula
+    homepage: https://github.com/certimate-go/cli
+    description: CLI for Certimate SSL certificate management
+    test: |
+      system "#{bin}/certimate version"
+    install: |
+      bin.install "certimate"
+
+scoops:
+  - bucket:
+      owner: certimate-go
+      name: scoop-bucket
+    homepage: https://github.com/certimate-go/cli
+    description: CLI for Certimate SSL certificate management
+    license: MIT

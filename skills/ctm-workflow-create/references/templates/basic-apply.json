@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "id": "start-node",
+      "type": "start",
+      "data": {
+        "name": "Start",
+        "config": {
+          "trigger": "manual"
+        }
+      }
+    },
+    {
+      "id": "apply-node",
+      "type": "bizApply",
+      "data": {
+        "name": "Apply Certificate",
+        "config": {
+          "challengeType": "dns-01",
+          "keySource": "auto",
+          "keyAlgorithm": "RSA2048",
+          "skipBeforeExpiryDays": 30
+        }
+      }
+    },
+    {
+      "id": "end-node",
+      "type": "end",
+      "data": {
+        "name": "End"
+      }
+    }
+  ],
+  "edges": [
+    {"source": "start-node", "target": "apply-node"},
+    {"source": "apply-node", "target": "end-node"}
+  ]
+}

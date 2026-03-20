@@ -1,0 +1,57 @@
+{
+  "_comment": "Example workflow for Aliyun (Alibaba Cloud) provider",
+  "nodes": [
+    {
+      "id": "start-node",
+      "type": "start",
+      "data": {
+        "name": "Start",
+        "config": {
+          "trigger": "manual"
+        }
+      }
+    },
+    {
+      "id": "apply-node",
+      "type": "bizApply",
+      "data": {
+        "name": "Apply Certificate",
+        "config": {
+          "challengeType": "dns-01",
+          "keySource": "auto",
+          "keyAlgorithm": "RSA2048",
+          "skipBeforeExpiryDays": 30
+        }
+      }
+    },
+    {
+      "id": "deploy-node",
+      "type": "bizDeploy",
+      "data": {
+        "name": "Deploy to Aliyun CDN",
+        "config": {
+          "skipOnLastSucceeded": true,
+          "certificateOutputNodeId": "apply-node"
+        }
+      }
+    },
+    {
+      "id": "end-node",
+      "type": "end",
+      "data": {
+        "name": "End"
+      }
+    }
+  ],
+  "edges": [
+    {"source": "start-node", "target": "apply-node"},
+    {"source": "apply-node", "target": "deploy-node"},
+    {"source": "deploy-node", "target": "end-node"}
+  ],
+  "_notes": {
+    "prerequisites": [
+      "Create an access credential for Aliyun first: certimate access create --provider aliyun --config @aliyun-access.json",
+      "Aliyun access config: {\"accessKeyId\": \"your-access-key-id\", \"accessKeySecret\": \"your-access-key-secret\"}"
+    ]
+  }
+}
