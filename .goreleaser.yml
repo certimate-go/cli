@@ -58,6 +58,7 @@ brews:
     repository:
       owner: certimate-go
       name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     directory: Formula
     homepage: https://github.com/certimate-go/cli
     description: CLI for Certimate SSL certificate management
