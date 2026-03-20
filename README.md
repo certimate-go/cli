@@ -3,7 +3,7 @@
 Command-line interface for [Certimate](https://github.com/certimate-go/certimate) SSL certificate management.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/certimate-go/cli)](https://goreportcard.com/report/github.com/certimate-go/cli)
-[![License](https://img.shields.io/github/license/certimate-go/certimate-cli)](LICENSE)
+[![License](https://img.shields.io/github/license/certimate-go/cli)](LICENSE)
 
 ## Features
 
