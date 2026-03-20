@@ -36,7 +36,9 @@ Download from [GitHub Releases](https://github.com/certimate-go/cli/releases).
 certimate config set --server https://certimate.example.com --token YOUR_TOKEN
 ```
 
-The token must be a superuser token obtained from Certimate web UI (Settings > API Tokens).
+The token is a superuser impersonation token from PocketBase admin dashboard
+(Collections > `_superusers` > select user > "Impersonate").
+See [PocketBase docs](https://pocketbase.io/docs/authentication/#api-keys) for details.
 
 ### Environment Variables
 

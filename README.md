@@ -40,7 +40,13 @@ brew install certimate-go/tap/certimate
 certimate config set --server http://127.0.0.1:8090 --token YOUR_API_TOKEN
 ```
 
-Obtain an API token from Certimate web UI (Settings > API Tokens).
+Obtain an API token from PocketBase admin UI:
+1. Open PocketBase admin dashboard (e.g., `http://127.0.0.1:8090/_/`)
+2. Go to Collections > `_superusers` > select a superuser
+3. Click "Impersonate" dropdown to generate a nonrenewable auth token
+
+> **Note:** PocketBase uses superuser impersonation tokens instead of traditional API keys.
+> See [PocketBase Authentication docs](https://pocketbase.io/docs/authentication/#api-keys) for details.
 
 ### 2. List Workflows
 
