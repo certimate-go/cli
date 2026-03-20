@@ -188,14 +188,25 @@ certimate workflow list --output table
 
 ## AI Agent Skills
 
-This CLI includes SKILL.md files for AI agent integration:
+The repo ships Agent Skills (SKILL.md files) for AI-powered SSL certificate management:
 
-- `ctm-shared` - Common patterns and installation
-- `ctm-workflow` - Workflow management
-- `ctm-certificate` - Certificate operations
-- `ctm-access` - Access management
+- `ctm-shared` - Common patterns, authentication, and CLI setup
+- `ctm-workflow` - Certificate workflow operations
+- `ctm-certificate` - Certificate viewing and downloading
+- `ctm-access` - Provider credential management
 
-Install skills for Claude Code:
+### Using npx
+
+```bash
+# Install all skills at once
+npx skills add https://github.com/certimate-go/cli
+
+# Or pick only what you need
+npx skills add https://github.com/certimate-go/cli/tree/main/skills/ctm-workflow
+npx skills add https://github.com/certimate-go/cli/tree/main/skills/ctm-certificate
+```
+
+### Manual Installation
 
 ```bash
 cp -r skills/* ~/.claude/skills/
