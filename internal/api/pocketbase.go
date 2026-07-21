@@ -151,21 +151,37 @@ func (c *Client) GetCertificate(ctx context.Context, id string) (*models.Certifi
 	return &result, nil
 }
 
-// DownloadCertificate downloads a certificate in the specified format
+// DownloadCertificate downloads a certificate in the specified format.
+//
+// The server responds with resp.Ok's envelope
+// {"code":0,"msg":"success","data":{"zipBytes":"<base64 zip>"}}, where zipBytes
+// is a base64-encoded ZIP archive containing the certificate/key files. Go's
+// encoding/json base64-decodes []byte for us. Note that the server returns
+// HTTP 200 even on failure, so a non-zero code must be treated as an error.
 func (c *Client) DownloadCertificate(ctx context.Context, certificateID, format string) ([]byte, error) {
 	path := fmt.Sprintf("/api/certificates/%s/download", certificateID)
-	body := map[string]string{"format": format}
+	body := map[string]string{"fileFormat": format}
 
 	var result struct {
-		Certificate string `json:"certificate"`
-		PrivateKey  string `json:"privateKey"`
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data struct {
+			ZipBytes []byte `json:"zipBytes"`
+		} `json:"data"`
 	}
 	if err := c.Do(ctx, "POST", path, body, &result); err != nil {
 		return nil, fmt.Errorf("download certificate: %w", err)
 	}
 
-	// Return the certificate data
-	return []byte(result.Certificate), nil
+	if result.Code != 0 {
+		msg := result.Msg
+		if msg == "" {
+			msg = "unknown error"
+		}
+		return nil, fmt.Errorf("download certificate: %s", msg)
+	}
+
+	return result.Data.ZipBytes, nil
 }
 
 // ListAccess fetches all access credentials with optional filtering

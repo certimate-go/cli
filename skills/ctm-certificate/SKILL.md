@@ -4,7 +4,7 @@ version: 1.0.0
 description: |
   Certimate CLI: Certificate management for SSL certificates.
   Use when: (1) Listing or viewing SSL certificates, (2) Checking certificate
-  expiry status, (3) Downloading certificates in various formats.
+  expiry status, (3) Downloading certificates as ZIP archives.
 metadata:
   openclaw:
     category: "devops"
@@ -53,15 +53,43 @@ certimate certificate get CERTIFICATE_ID
 
 ### Download Certificate
 
+Downloads a certificate as a **ZIP archive** — the server always returns an
+archive, never a single PEM/PFX file. The archive bundles the cert, private key,
+and chain:
+
+- `--format PEM` (default): `<domain>.key`, `<domain>.crt`, `<domain> (server).pem`, `<domain> (intermedia).pem`
+- `--format PFX` / `--format JKS`: a single `<domain>.pfx` / `<domain>.jks`. The CLI does not expose password/alias flags, so server defaults apply (e.g. PFX password is `certimate`).
+
+The destination is `--dest` (not `--output` — that is the global output-format flag, `json|table`, which controls the status line below):
+
 ```bash
-# Download as PEM
-certimate certificate download CERTIFICATE_ID --format PEM
+# Default: writes <domain>-<id>.zip in the current directory
+certimate certificate download CERTIFICATE_ID
 
-# Download to file
-certimate certificate download CERTIFICATE_ID --format PEM --output cert.pem
+# A directory (or path ending in /) writes <domain>-<id>.zip inside it
+certimate certificate download CERTIFICATE_ID --dest ./certs/
 
-# Download as PFX
-certimate certificate download CERTIFICATE_ID --format PFX --output cert.pfx
+# A name ending in .zip is used as-is
+certimate certificate download CERTIFICATE_ID --dest cert.zip
+
+# A non-.zip name gets .zip appended -> writes test.pem.zip
+certimate certificate download CERTIFICATE_ID --dest test.pem
+
+# Stream the raw archive bytes to stdout
+certimate certificate download CERTIFICATE_ID --dest -
+```
+
+`--dest` rules:
+
+- **Omitted** (default): writes `<domain>-<certificateId>.zip` in the current directory.
+- **Directory** (existing dir, or path ending in `/`): writes `<domain>-<certificateId>.zip` inside it; the directory is created if it does not exist. `<domain>` is the first SAN with `*` replaced by `_`.
+- **File path**: used verbatim if it ends in `.zip` (case-insensitive); otherwise `.zip` is appended.
+- **`-`**: raw archive bytes are written to stdout.
+
+The status output (formatted by the global `--output`/`-o`) reports the actual file written:
+
+```json
+{ "status": "downloaded", "format": "PEM", "dest": "example.com-t9vjtlj60tsbahy.zip", "size_bytes": 1234 }
 ```
 
 ## Filtering
@@ -103,9 +131,10 @@ certimate workflow run WORKFLOW_ID --wait
 ### Backup Certificates
 
 ```bash
-# Download all certificates
+# Download every certificate into ./backups/, each as <domain>-<id>.zip
+mkdir -p backups
 for id in $(certimate certificate list | jq -r '.items[].id'); do
-  certimate certificate download "$id" --format PEM --output "cert_$id.pem"
+  certimate certificate download "$id" --format PEM --dest backups/
 done
 ```
 
