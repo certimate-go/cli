@@ -122,7 +122,7 @@ certimate certificate list [--filter EXPR] [--limit N]
 certimate certificate get CERTIFICATE_ID
 
 # Download certificate
-certimate certificate download CERTIFICATE_ID --format PEM|PFX|JKS [--output FILE]
+certimate certificate download CERTIFICATE_ID --format PEM|PFX|JKS [--dest FILE]
 ```
 
 ### Access Credentials
